@@ -58,6 +58,7 @@ def get_protein_ids(seqid, align_segs):
             # File did not download correctly, we will try to get it again
             pass
     if not record:
+        # TODO: use urllib.request to download file instead
         logging.debug("Downloading genbank record for " + seqid)
         query = f"{RECORD_URL}db=nuccore&id={seqid}&rettype=gb&retmode=text"
         cmd = f'curl -Lk "{query}" > {file}'

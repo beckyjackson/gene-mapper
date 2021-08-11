@@ -14,14 +14,12 @@ SHELL := bash
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Darwin)
-	# RDFTAB_URL := https://github.com/ontodev/rdftab.rs/releases/download/v0.1.1/rdftab-x86_64-apple-darwin
 	BLAST_URL := https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.10.0/ncbi-blast-2.10.0+-x64-macosx.tar.gz
 else
-	# RDFTAB_URL := https://github.com/ontodev/rdftab.rs/releases/download/v0.1.1/rdftab-x86_64-unknown-linux-musl
 	BLAST_URL := https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.10.0/ncbi-blast-2.10.0+-x64-linux.tar.gz
 endif
 
-all: build/elements_mapped.tsv
+all: build/element_protein.tsv
 
 
 ### SET UP
@@ -93,5 +91,10 @@ seq_align: build/short_seq_align.tsv build/seq_align.tsv
 
 ### RESULT PROCESSING
 
+# All "top" mappings with their Genbank & Uniprot protein IDs
 build/elements_mapped.tsv: src/process_alignments.py build/elements.tsv build/seq_align.tsv build/short_seq_align.tsv | build/records
+	python3 $^ $@
+
+# Only the "best" UniProt IDs
+build/element_protein.tsv: src/select_protein.py build/elements_mapped.tsv
 	python3 $^ $@
